@@ -57,26 +57,26 @@ class Board implements Ilayout, Cloneable {
         return new Board(result.toString());
     }
 
-    private Board moveUp(int row, int col) throws CloneNotSupportedException {
+    private Board moveUp(int row, int col) {
         Board result = (Board) this.clone();
         result.board[row][col] = board[row-1][col];
         result.board[row-1][col] = 0;
         return result;
     }
-    private Board moveDown(int row, int col) throws CloneNotSupportedException {
+    private Board moveDown(int row, int col) {
         Board result = (Board) this.clone();
         result.board[row][col] = board[row+1][col];
         result.board[row+1][col] = 0;
         return result;
     }
 
-    private Board moveLeft(int row, int col) throws CloneNotSupportedException {
+    private Board moveLeft(int row, int col) {
         Board result = (Board) this.clone();
         result.board[row][col] = board[row][col-1];
         result.board[row][col-1] = 0;
         return result;
     }
-    private Board moveRight(int row, int col) throws CloneNotSupportedException {
+    private Board moveRight(int row, int col) {
         Board result = (Board) this.clone();
         result.board[row][col] = board[row][col+1];
         result.board[row][col+1] = 0;
@@ -84,7 +84,7 @@ class Board implements Ilayout, Cloneable {
     }
 
     @Override
-    public List<Ilayout> children() throws CloneNotSupportedException {
+    public List<Ilayout> children() {
         List<Ilayout> result = new ArrayList<>();
         //posições de onde se encontra o 0 na board
         int row = 0;
