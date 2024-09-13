@@ -72,6 +72,7 @@ class Board implements Ilayout, Cloneable {
             https://prnt.sc/vskaLRt0UW3j paint de eu a chegar ao raciocinio
          */
         if (row < dim - 1) { //move baixo
+
         }
         if (row > 0) { //move cima
 
