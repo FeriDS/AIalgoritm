@@ -105,7 +105,7 @@ class Board implements Ilayout, Cloneable {
             }
         }
         /*
-            Raciocinio na minha cabeça que queria escrever para lembrar
+            Raciocinio na minha cabeça que queria escrever para lembrar.
             Mas codigo (not anymore)HORRIVEL (fixed melhor agora só falta as funcões de mover e clonar o novo)
             https://prnt.sc/vskaLRt0UW3j paint de eu a chegar ao raciocinio
          */

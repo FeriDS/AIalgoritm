@@ -99,7 +99,7 @@ public class PuzzleUnitTests {
         children2.add(b3);
         assertEquals(children2, b.children());
     }
-    @Test //0 no meio
+    @Test //0 no meio do grid
     public void testChildren3() throws CloneNotSupportedException {
         Board b = new Board("123405678");
         Board b2 = new Board("123475608");
