@@ -50,42 +50,36 @@ class Board implements Ilayout, Cloneable {
     public List<Ilayout> children() {
         List<Ilayout> result = new ArrayList<>();
         //posições de onde se encontra o 0 na board
-        int bufferi = 0;
-        int bufferj = 0;
+        int colum = 0;
+        int row = 0;
         //buffer para troca do 0 com outros para criação de criançãs
         int buffert = 0;
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
                 if (board[i][j] == 0) {
-                    bufferj = j;
+                    row = j;
                     break;
                 }
             }
-            if (board[i][bufferj] == 0) {
-                bufferi = i;
+            if (board[i][row] == 0) {
+                colum = i;
                 break;
             }
         }
         /*
             Raciocinio na minha cabeça que queria escrever para lembrar
-            Mas codigo HORRIVEL
+            Mas codigo (not anymore)HORRIVEL (fixed melhor agora só falta as funcões de mover e clonar o novo)
             https://prnt.sc/vskaLRt0UW3j
          */
-        if (bufferj == dim - 1) { //baixo
+        if (row < dim - 1) { //move baixo
         }
-        if (bufferj == 0) { //cima
+        if (row > 0) { //move cima
 
         }
-        if (bufferi == dim - 1) { //lado direito
+        if (colum < dim - 1) { //move right
 
         }
-        if (bufferi == 0) { //lado esquerdo
-
-        }
-        if (bufferi > 0 && bufferi < dim -1) { //meio vertical
-
-        }
-        if (bufferj > 0 && bufferj < dim -1) { //meio horizontal
+        if (colum > 0) { //move left
 
         }
         return List.of();

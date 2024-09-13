@@ -32,7 +32,7 @@ public class PuzzleUnitTests {
     public void testEquals1() {
         Board b = new Board("023145678");
         Board b2 = new Board("023145678");
-        assertTrue(b.equals(b2));
+        assertEquals(b, b2);
     }
     @Test
     public void testEquals2() {
