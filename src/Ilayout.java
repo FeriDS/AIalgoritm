@@ -4,7 +4,7 @@ public interface Ilayout {
     /**
      @return the children of the receiver.
      */
-    List<Ilayout> children();
+    List<Ilayout> children() throws CloneNotSupportedException;
     /**
     * @return true if the receiver equals the argument l;
     return false otherwise.
