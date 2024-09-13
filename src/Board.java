@@ -50,7 +50,7 @@ class Board implements Ilayout, Cloneable {
     public List<Ilayout> children() {
         List<Ilayout> result = new ArrayList<>();
         //posições de onde se encontra o 0 na board
-        int colum = 0;
+        int collum = 0;
         int row = 0;
         //buffer para troca do 0 com outros para criação de criançãs
         int buffert = 0;
@@ -62,7 +62,7 @@ class Board implements Ilayout, Cloneable {
                 }
             }
             if (board[i][row] == 0) {
-                colum = i;
+                collum = i;
                 break;
             }
         }
@@ -77,10 +77,10 @@ class Board implements Ilayout, Cloneable {
         if (row > 0) { //move cima
 
         }
-        if (colum < dim - 1) { //move right
+        if (collum < dim - 1) { //move right
 
         }
-        if (colum > 0) { //move left
+        if (collum > 0) { //move left
 
         }
         return List.of();
