@@ -89,8 +89,6 @@ class Board implements Ilayout, Cloneable {
         //posições de onde se encontra o 0 na board
         int row = 0;
         int collum = 0;
-        //buffer para troca do 0 com outros para criação de criançãs
-        int buffert = 0;
 
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
@@ -106,7 +104,7 @@ class Board implements Ilayout, Cloneable {
         }
         /*
             Raciocinio na minha cabeça que queria escrever para lembrar.
-            Mas codigo (not anymore)HORRIVEL (fixed melhor agora só falta as funcões de mover e clonar o novo)
+            Mas codigo (not anymore)HORRIVEL (fixed melhor agora só falta as funcões de mover e clonar o novo (funções feitas já))
             https://prnt.sc/vskaLRt0UW3j paint de eu a chegar ao raciocinio
          */
         if (row < dim - 1) { //move baixo
