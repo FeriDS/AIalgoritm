@@ -28,6 +28,16 @@ class BestFirst {
             return this.layout.equals(n.layout);
         }
     }
+    private List<State> ascendants(State atual) {
+        List<State> result = new ArrayList<>();
+        State atualb = atual;
+        while (atualb.father != null) {
+            result.addFirst(atualb);
+            atualb = atualb.father;
+        }
+        result.addFirst(atualb);
+        return result;
+    }
     final private List<State> sucessores(State n) throws CloneNotSupportedException {
         List<State> sucs = new ArrayList<>();
         List<Ilayout> children = n.layout.children();
@@ -49,15 +59,15 @@ class BestFirst {
         State atual;
         List<State> sucs = new ArrayList<>();
         int j = 0;
-        List<State> c;
-        Boolean r = false;
+        List<State> c = new ArrayList<>();
+        Boolean isAddable = false;
         while (true) {
             if (abertos.isEmpty()) {
                 break;
             }
             atual = abertos.poll();
-            if (atual.layout == goal) {
-                sucs = sucessores(atual);
+            if (atual.layout.isGoal(objective)) {
+                sucs = ascendants(atual); //return ascendentes;
                 break;
             }
             else {
@@ -66,17 +76,21 @@ class BestFirst {
                     sucs.add(new State(ilayout, atual));
                 }
                 fechados.put(atual.layout, atual.father);
+                c.add(atual);
                 j = 0;
                 for (int i = 0; i < sucs.size()+j; i++) {
-                    c = fechados.values().stream().toList();
                     for(int k = 0; k < fechados.size(); k++){
-                        if (!sucs.get(i - j).equals(c.get(k))) {
-                            abertos.add(sucs.remove(i - j++));
-                            r = true;
+                        if (sucs.get(i - j).equals(c.get(k))) {
+                            isAddable = false;
+                            break;
                         }
+                        else isAddable = true; //se nao encontrar igual nos fechados
                     }
-                    if(!r)
-                        sucs.remove(i - j++);
+                    if (isAddable) {
+                        abertos.add(sucs.remove(i - j));
+                    }
+                    else sucs.remove(i - j);
+                    j++;
                 }
             }
 

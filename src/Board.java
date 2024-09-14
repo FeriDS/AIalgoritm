@@ -139,6 +139,6 @@ class Board implements Ilayout, Cloneable {
 
     @Override
     public double getK() {
-        return 0;
+        return 1;
     }
 }
