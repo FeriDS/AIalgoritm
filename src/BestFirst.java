@@ -39,14 +39,35 @@ class BestFirst {
         }
         return sucs;
     }
-    final public Iterator<State> solve(Ilayout s, Ilayout goal) {
+    final public Iterator<State> solve(Ilayout s, Ilayout goal) throws CloneNotSupportedException {
         objective = goal;
         abertos = new PriorityQueue<>(10,
                 (s1, s2) -> (int) Math.signum(s1.getG()-s2.getG()));
         fechados = new HashMap<> ();
         abertos.add(new State(s, null));
         List<State> sucs;
-// TO BE COMPLETED
+        while(true)
+        {
+            if (abertos.isEmpty())
+            {
+                break;
+            }
+
+            actual = abertos.remove();
+
+            if (actual.layout == goal)
+            {
+                sucs = sucessores(actual);
+                break;
+            }
+            else
+            {
+                sucessores(actual) = actual.;
+            }
+        }
+
+
+
         return null;
     }
 }
