@@ -45,8 +45,8 @@ class Board implements Ilayout, Cloneable {
         int result = 3;
         int prime = 7;
 
-        for (int i = 0; i < this.dim; i++) {
-            for (int j = 0; j < this.dim; j++) {
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
                 result = prime * result + this.board[i][j];
             }
         }
