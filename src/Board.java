@@ -42,8 +42,15 @@ class Board implements Ilayout, Cloneable {
     }
 
     public int hashCode() {
-// TO BE COMPLETED
-        return board[0][0];
+        int result = 3;
+        int prime = 7;
+
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                result = prime * result + this.board[i][j];
+            }
+        }
+        return result;
     }
 
     @Override
