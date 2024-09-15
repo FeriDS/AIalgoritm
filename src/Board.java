@@ -9,6 +9,11 @@ class Board implements Ilayout, Cloneable {
         board = new int[dim][dim];
     }
 
+    /**
+     * Construtor da classe Board
+     * @param str string com os parametros necessarios para construir uma Board
+     * @throws IllegalStateException
+     */
     public Board(String str) throws IllegalStateException {
         if (str.length() != dim * dim) throw new
                 IllegalStateException("Invalid arg in Board constructor");
@@ -64,12 +69,25 @@ class Board implements Ilayout, Cloneable {
         return new Board(result.toString());
     }
 
+    /**
+     * Função que move o 0 para cima
+     * @param row inteiro que representa a linha onde ésta o 0
+     * @param col inteiro que representa a coluna onde ésta o 0
+     * @return umm deep clone da Board onde o 0 foi movimentado
+     */
     private Board moveUp(int row, int col) {
         Board result = (Board) this.clone();
         result.board[row][col] = board[row-1][col];
         result.board[row-1][col] = 0;
         return result;
     }
+
+    /**
+     * Função que move o 0 para baixo
+     * @param row inteiro que representa a linha onde ésta o 0
+     * @param col inteiro que representa a coluna onde ésta o 0
+     * @return umm deep clone da Board onde o 0 foi movimentado
+     */
     private Board moveDown(int row, int col) {
         Board result = (Board) this.clone();
         result.board[row][col] = board[row+1][col];
@@ -77,12 +95,25 @@ class Board implements Ilayout, Cloneable {
         return result;
     }
 
+    /**
+     * Função que move o 0 para esquerda
+     * @param row inteiro que representa a linha onde ésta o 0
+     * @param col inteiro que representa a coluna onde ésta o 0
+     * @return umm deep clone da Board onde o 0 foi movimentado
+     */
     private Board moveLeft(int row, int col) {
         Board result = (Board) this.clone();
         result.board[row][col] = board[row][col-1];
         result.board[row][col-1] = 0;
         return result;
     }
+
+    /**
+     * Função que move o 0 para direita
+     * @param row inteiro que representa a linha onde ésta o 0
+     * @param col inteiro que representa a coluna onde ésta o 0
+     * @return umm deep clone da Board onde o 0 foi movimentado
+     */
     private Board moveRight(int row, int col) {
         Board result = (Board) this.clone();
         result.board[row][col] = board[row][col+1];
@@ -90,6 +121,10 @@ class Board implements Ilayout, Cloneable {
         return result;
     }
 
+    /**
+     * Função que faz todos os movimentos possiveis
+     * @return uma lista de Ilayout(Board) com todos os movimentos
+     */
     @Override
     public List<Ilayout> children() {
         List<Ilayout> result = new ArrayList<>();
@@ -109,11 +144,7 @@ class Board implements Ilayout, Cloneable {
                 break;
             }
         }
-        /*
-            Raciocinio na minha cabeça que queria escrever para lembrar.
-            Mas codigo (not anymore)HORRIVEL (fixed melhor agora só falta as funcões de mover e clonar o novo (funções feitas já))
-            https://prnt.sc/vskaLRt0UW3j paint de eu a chegar ao raciocinio
-         */
+
         if (row < dim - 1) { //move baixo
             result.add(this.moveDown(row, collum));
 

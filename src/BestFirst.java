@@ -28,6 +28,12 @@ class BestFirst {
             return this.layout.equals(n.layout);
         }
     }
+
+    /**
+     * Função que retorna uma lista com os ascendentes do "atual"
+     * @param atual é um estado com o seu layout, pai e preço
+     * @return lista de estados dos ascendentes
+     */
     private List<State> ascendants(State atual) {
         List<State> result = new ArrayList<>();
         State atualb = atual;
@@ -38,6 +44,7 @@ class BestFirst {
         result.addFirst(atualb);
         return result;
     }
+
     final private List<State> sucessores(State n) throws CloneNotSupportedException {
         List<State> sucs = new ArrayList<>();
         List<Ilayout> children = n.layout.children();
@@ -49,6 +56,14 @@ class BestFirst {
         }
         return sucs;
     }
+
+    /**
+     * Função que resolve um dado puzzle
+     * @param s é uma variavel da interface Ilayout, que é o estado inicial do que pretendemos resolver
+     * @param goal é uma variavel da interface Ilayout, que é o estado desejado do problema
+     * @return retorna um iterador com todos os estados percorridos para resolver o problema
+     * @throws CloneNotSupportedException
+     */
     final public Iterator<State> solve(Ilayout s, Ilayout goal) throws CloneNotSupportedException {
          objective = goal;
         abertos = new PriorityQueue<>(10,
@@ -60,7 +75,7 @@ class BestFirst {
         List<State> sucs = new ArrayList<>();
         int j = 0;
         List<State> c = new ArrayList<>();
-        Boolean isAddable = false;
+        boolean isAddable = false;
         while (true) {
             if (abertos.isEmpty()) {
                 break;
