@@ -14,7 +14,7 @@ class BestFirst {
             father = n;
             if (father!=null)
                 g = father.g + l.getK();
-            else g = 0.0;
+            else g = 0;
         }
         public String toString() { return layout.toString(); }
         public double getG() {return g;}
@@ -27,6 +27,16 @@ class BestFirst {
             State n = (State) o;
             return this.layout.equals(n.layout);
         }
+    }
+    private List<State> ascendants(State atual) {
+        List<State> result = new ArrayList<>();
+        State atualb = atual;
+        while (atualb.father != null) {
+            result.addFirst(atualb);
+            atualb = atualb.father;
+        }
+        result.addFirst(atualb);
+        return result;
     }
     final private List<State> sucessores(State n) throws CloneNotSupportedException {
         List<State> sucs = new ArrayList<>();
@@ -45,29 +55,46 @@ class BestFirst {
                 (s1, s2) -> (int) Math.signum(s1.getG()-s2.getG()));
         fechados = new HashMap<> ();
         abertos.add(new State(s, null));
-        List<State> sucs;
-        while(true)
-        {
-            if (abertos.isEmpty())
-            {
+        List<Ilayout> buffer;
+        State atual;
+        List<State> sucs = new ArrayList<>();
+        int j = 0;
+        List<State> c = new ArrayList<>();
+        Boolean isAddable = false;
+        while (true) {
+            if (abertos.isEmpty()) {
                 break;
             }
-
-            actual = abertos.remove();
-
-            if (actual.layout == goal)
-            {
-                sucs = sucessores(actual);
+            atual = abertos.poll();
+            if (atual.layout.isGoal(objective)) {
+                sucs = ascendants(atual); //return ascendentes;
                 break;
             }
-            else
-            {
-                sucessores(actual) = actual.;
+            else {
+                buffer = atual.layout.children();
+                for (Ilayout ilayout : buffer) {
+                    sucs.add(new State(ilayout, atual));
+                }
+                fechados.put(atual.layout, atual.father);
+                c.add(atual);
+                j = 0;
+                for (int i = 0; i < sucs.size()+j; i++) {
+                    for(int k = 0; k < fechados.size(); k++){
+                        if (sucs.get(i - j).equals(c.get(k))) {
+                            isAddable = false;
+                            break;
+                        }
+                        else isAddable = true; //se nao encontrar igual nos fechados
+                    }
+                    if (isAddable) {
+                        abertos.add(sucs.remove(i - j));
+                    }
+                    else sucs.remove(i - j);
+                    j++;
+                }
             }
+
         }
-
-
-
-        return null;
+        return sucs.iterator();
     }
 }
