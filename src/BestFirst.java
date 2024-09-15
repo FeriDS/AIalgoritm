@@ -14,7 +14,7 @@ class BestFirst {
             father = n;
             if (father!=null)
                 g = father.g + l.getK();
-            else g = 0.0;
+            else g = 0;
         }
         public String toString() { return layout.toString(); }
         public double getG() {return g;}

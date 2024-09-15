@@ -12,9 +12,9 @@ public class Main {
             while(it.hasNext()) {
                 BestFirst.State i = it.next();
                 System.out.println(i);
-                if (!it.hasNext()) System.out.println(i.getG());
+                if (!it.hasNext()) System.out.println((int) i.getG());
             }
-        }
+        } //https://prnt.sc/agvMcyja7bQG paint usado no debug
         sc.close();
     }
 }
