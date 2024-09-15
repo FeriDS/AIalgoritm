@@ -80,7 +80,7 @@ public class PuzzleUnitTests {
      */
 
     @Test //0 no canto superior esquerdo
-    public void testChildren1() throws CloneNotSupportedException {
+    public void testChildren1() {
         Board b = new Board("023145678");
         Board b2 = new Board("203145678");
         Board b3 = new Board("123045678");
@@ -90,7 +90,7 @@ public class PuzzleUnitTests {
         assertEquals(children2, b.children());
     }
     @Test //0 no canto inferior direito
-    public void testChildren2() throws CloneNotSupportedException {
+    public void testChildren2() {
         Board b = new Board("123456780");
         Board b2 = new Board("123450786");
         Board b3 = new Board("123456708");
@@ -100,7 +100,7 @@ public class PuzzleUnitTests {
         assertEquals(children2, b.children());
     }
     @Test //0 no meio do grid
-    public void testChildren3() throws CloneNotSupportedException {
+    public void testChildren3() {
         Board b = new Board("123405678");
         Board b2 = new Board("123475608");
         Board b3 = new Board("103425678");
