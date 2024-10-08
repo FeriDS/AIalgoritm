@@ -73,9 +73,7 @@ class BestFirst {
         List<Ilayout> buffer;
         State atual;
         List<State> sucs = new ArrayList<>();
-        int j = 0;
-        List<State> c = new ArrayList<>();
-        boolean isAddable = false;
+        int j;
         while (true) {
             if (abertos.isEmpty()) {
                 break;
@@ -91,21 +89,12 @@ class BestFirst {
                     sucs.add(new State(ilayout, atual));
                 }
                 fechados.put(atual.layout, atual.father);
-                c.add(atual);
                 j = 0;
                 for (int i = 0; i < sucs.size()+j; i++) {
-                    for(int k = 0; k < fechados.size(); k++){
-                        if (sucs.get(i - j).equals(c.get(k))) {
-                            isAddable = false;
-                            break;
-                        }
-                        else isAddable = true; //se nao encontrar igual nos fechados
-                    }
-                    if (isAddable) {
-                        abertos.add(sucs.remove(i - j));
-                    }
-                    else sucs.remove(i - j);
-                    j++;
+                    if(!fechados.containsKey(sucs.get(i - j)))
+                        abertos.add(sucs.remove(i - j++));
+                    else
+                        sucs.remove(i - j++);
                 }
             }
 
