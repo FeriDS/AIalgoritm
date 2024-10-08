@@ -59,7 +59,7 @@ class Board implements Ilayout, Cloneable {
     }
 
     @Override
-    protected Object clone(){
+    protected Object clone() {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
