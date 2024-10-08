@@ -1,5 +1,6 @@
 import org.testng.internal.collections.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -102,7 +103,31 @@ public class Containers implements Ilayout{
 
     @Override
     public List<Ilayout> children() {
-        return List.of();
+        List<Ilayout> children = new ArrayList<>();
+        Containers buffer;
+        Pair<Character, Integer> pairBuffer;
+        for (int i = 0; i < stackSize - 1; i++) {
+            buffer = (Containers) this.clone();
+            if (containers[i] != null && !containers[i].isEmpty()) {
+                pairBuffer = buffer.containers[i].pop();
+                if (containers[i].size() > 1) {
+                    int i2 = pairBuffer.first();
+                    buffer.containers[pairBuffer.first() - 65].add(pairBuffer);
+                    buffer.setCost(pairBuffer.second());
+                    children.add(buffer);
+                }
+                for (int j = 0; j < stackSize - 1; j++) {
+                    buffer = (Containers) this.clone();
+                    pairBuffer = buffer.containers[i].pop();
+                    if (!containers[j].isEmpty() && j != i) {
+                        buffer.containers[j].add(pairBuffer);
+                        buffer.setCost(pairBuffer.second());
+                        children.add(buffer);
+                    }
+                }
+            }
+        }
+        return children;
     }
 
     @Override
