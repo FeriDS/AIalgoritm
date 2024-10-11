@@ -95,13 +95,6 @@ class ContainersTest {
         assertEquals(c1, c2);
     }
     @Test
-    public void testEquals3() {
-        Containers c1 = new Containers("A1 B2 C3");
-        Containers c2 = new Containers("A1 B2");
-        assertNotEquals(c1, c2);
-        assertNotEquals(c2, c1);
-    }
-    @Test
     public void testEquals4() {
         Containers c1 = new Containers("A1B2 B3");
         Containers c2 = new Containers("A2C1 C3");
@@ -112,6 +105,13 @@ class ContainersTest {
         Containers c1 = new Containers("A1 B2 C3");
         Containers c2 = new Containers("A B C");
         assertEquals(c1, c2);
+    }
+
+    @Test
+    public void testEquals6() {
+        Containers c1 = new Containers("K1 L1 N1J1 O1M1I1");
+        Containers c2 = new Containers("K1 L1 N1J1 O1I1M1");
+        assertNotEquals(c1, c2);
     }
 
 

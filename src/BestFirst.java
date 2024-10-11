@@ -5,6 +5,7 @@ class BestFirst {
     private Map<Ilayout, State> fechados;
     private State actual;
     private Ilayout objective;
+    private HashSet<State> abertosHash;
     static class State {
         private Ilayout layout;
         private State father;
@@ -70,34 +71,28 @@ class BestFirst {
                 (s1, s2) -> (int) Math.signum(s1.getG()-s2.getG()));
         fechados = new HashMap<> ();
         abertos.add(new State(s, null));
+        abertosHash = new HashSet<> ();
+        abertosHash.add(new State(s, null));
         List<Ilayout> buffer;
-        State atual;
+        State atual = null;
         List<State> sucs = new ArrayList<>();
         int j;
-        while (true) {
-            if (abertos.isEmpty()) {
-                break;
-            }
+        while (!abertos.isEmpty()) {
+            abertosHash.remove(atual);
             atual = abertos.poll();
-            if (atual.layout.isGoal(objective)) {
-                sucs = ascendants(atual); //return ascendentes;
+            if (atual.layout.isGoal(objective))
                 break;
-            }
-            else {
-                buffer = atual.layout.children();
-                for (Ilayout ilayout : buffer) {
-                    sucs.add(new State(ilayout, atual));
-                }
+            if (atual != null) {
                 fechados.put(atual.layout, atual.father);
-                j = 0;
-                for (int i = 0; i < sucs.size()+j; i++) {
-                    if(!fechados.containsKey(sucs.get(i - j)))
-                        abertos.add(sucs.remove(i - j++));
-                    else
-                        sucs.remove(i - j++);
+                sucs = sucessores(atual);
+            }
+            for (State suc: sucs) {
+                if (!fechados.containsKey(suc) && !abertosHash.contains(suc)) {
+                    abertosHash.add(suc);
+                    abertos.add(suc);
                 }
             }
         }
-        return sucs.iterator();
+        return ascendants(atual).iterator();
     }
 }
