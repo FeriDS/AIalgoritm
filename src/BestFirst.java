@@ -1,5 +1,5 @@
 import java.util.*;
-
+@SuppressWarnings("all")
 class BestFirst {
     protected Queue<State> abertos;
     private Map<Ilayout, State> fechados;
@@ -97,7 +97,6 @@ class BestFirst {
                         sucs.remove(i - j++);
                 }
             }
-
         }
         return sucs.iterator();
     }

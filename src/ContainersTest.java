@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -105,6 +106,12 @@ class ContainersTest {
         Containers c1 = new Containers("A1B2 B3");
         Containers c2 = new Containers("A2C1 C3");
         assertNotEquals(c1, c2);
+    }
+    @Test
+    public void testEquals5() {
+        Containers c1 = new Containers("A1 B2 C3");
+        Containers c2 = new Containers("A B C");
+        assertEquals(c1, c2);
     }
 
 
@@ -216,5 +223,27 @@ class ContainersTest {
         children.add(c47);
 
         assertEquals(c1.children(), children);
+    }
+
+    @Test
+    public void testCon() {
+        Containers c1 = new Containers("B2A1 C3");
+        c1.children().add(c1);
+    }
+
+    @Test
+    public void testSolve() throws Exception {
+        Containers c1 = new Containers("A1 B2 C3");
+        Containers c2 = new Containers("A1B2 C3");
+        Containers c3 = new Containers("A1B2C3");
+        Containers c4 = new Containers("ABC");
+        Containers[] a = {c1, c2, c3, c4};
+        BestFirst s = new BestFirst();
+        Iterator<BestFirst.State> it = s.solve(c1, c4);
+        int j = 0;
+        while(it.hasNext()) {
+            BestFirst.State i = it.next();
+            assertEquals(i.toString(), a[j++].toString());
+        }
     }
 }

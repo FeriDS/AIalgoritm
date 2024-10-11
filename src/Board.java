@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
-
+@SuppressWarnings("all")
 class Board implements Ilayout, Cloneable {
     private static final int dim = 3;
     private final int[][] board;

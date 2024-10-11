@@ -6,7 +6,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+@SuppressWarnings("all")
 public class PuzzleUnitTests {
     @Test
     public void testConstructor() {

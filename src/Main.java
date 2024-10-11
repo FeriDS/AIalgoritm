@@ -1,12 +1,12 @@
 import java.util.Iterator;
 import java.util.Scanner;
-
+@SuppressWarnings("all")
 public class Main {
     public static void main (String [] args) throws Exception {
         Scanner sc = new Scanner(System.in);
         BestFirst s = new BestFirst();
-        Iterator<BestFirst.State> it = s.solve(new Board(sc.next()),
-                new Board(sc.next()));
+        Iterator<BestFirst.State> it = s.solve(new Containers(sc.nextLine()),
+                new Containers(sc.nextLine()));
         if (it==null) System.out.println("no solution found");
         else {
             while(it.hasNext()) {
@@ -14,7 +14,7 @@ public class Main {
                 System.out.println(i);
                 if (!it.hasNext()) System.out.println((int) i.getG());
             }
-        } //https://prnt.sc/agvMcyja7bQG paint usado no debug
+        }
         sc.close();
     }
 }
