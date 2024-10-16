@@ -4,99 +4,109 @@ import java.util.Stack;
 
 
 public class Containers implements Ilayout{
-    static class stack {
-        private final Stack<Pair<Character, Integer>> stack = new Stack<>();
-    }
-    private final int stackSize = 26;
-    private final stack[] containers;
+    private static final int stackSize = 52;
+    private final Stack<Pair<Character, Integer>>[] containers;
     private int cachedHash = -1;
     private int cost = 0;
     private int lastIndex = 0;
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Containers() {
+        containers = (Stack<Pair<Character, Integer>>[]) new Stack[stackSize];
+    }
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public Containers(String str) {
-        containers = new stack[stackSize];
-        int buffer = str.charAt(0) - 65;
+        containers = (Stack<Pair<Character, Integer>>[]) new Stack[stackSize];
+        int buffer = calcIndex(str.charAt(0));
         int indexbuff = 0;
-        for (int i = 0; i < stackSize; i++) {
-            containers[i] = new stack();
-        }
         if (Character.isDigit(str.charAt(1))) {
-            containers[buffer].stack.push(new Pair<>(str.charAt(0), Character.getNumericValue(str.charAt(1))));
+            containers[buffer] = new Stack<>();
+            containers[buffer].push(new Pair<>(str.charAt(0), Character.getNumericValue(str.charAt(1))));
             for (int i = 2; i < str.length(); i++) {
                 if(str.charAt(i)==' '){
-                    buffer = str.charAt(++i) - 65;
+                    buffer = calcIndex(str.charAt(++i));
                     if (lastIndex < buffer) {
                         lastIndex = buffer;
                     }
-                    containers[buffer].stack.push(new Pair<>(str.charAt(i), Character.getNumericValue(str.charAt(++i))));
+                    containers[buffer] = new Stack<>();
+                    containers[buffer].push(new Pair<>(str.charAt(i), Character.getNumericValue(str.charAt(++i))));
                 }
                 else {
-                    indexbuff = str.charAt(i) - 65;
+                    indexbuff =calcIndex(str.charAt(i));
                     if (lastIndex < indexbuff) {
                     lastIndex = indexbuff;
                     }
-                    containers[buffer].stack.push(new Pair<>(str.charAt(i), Character.getNumericValue(str.charAt(++i))));
+                    containers[buffer].push(new Pair<>(str.charAt(i), Character.getNumericValue(str.charAt(++i))));
                 }
             }
         }
         else {
-            containers[buffer].stack.push(new Pair<>(str.charAt(0), null));
+            containers[buffer] = new Stack<>();
+            containers[buffer].push(new Pair<>(str.charAt(0), null));
             for (int i = 1; i < str.length(); i++) {
                 if(str.charAt(i)==' '){
-                    buffer = str.charAt(++i) - 65;
-                    containers[buffer].stack.push(new Pair<>(str.charAt(i), null));
+                    buffer = calcIndex(str.charAt(++i));
+                    containers[buffer] = new Stack<>();
+                    containers[buffer].push(new Pair<>(str.charAt(i), null));
                 }
                 else
-                    containers[buffer].stack.push(new Pair<>(str.charAt(i), null));
+                    containers[buffer].push(new Pair<>(str.charAt(i), null));
             }
         }
     }
 
+    private int calcIndex(Character a) {
+        return a - 65 > 26 ? a - 71 : a - 65;
+    }
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
         if (!(o instanceof Containers o1)) return false;
+        Stack<Pair<Character, Integer>> thisContainer;
+        Stack<Pair<Character, Integer>> thatContainer;
         for (int i = 0; i < lastIndex + 1; i++) {
-            if ((o1.containers[i].stack.isEmpty() && !containers[i].stack.isEmpty()) || (!o1.containers[i].stack.isEmpty() && containers[i].stack.isEmpty()))
+            thisContainer = containers[i];
+            thatContainer = o1.containers[i];
+            if ((thatContainer == null && thisContainer != null) || (thatContainer != null && thisContainer == null))
                 return false;
-            if (containers[i].stack.size() != o1.containers[i].stack.size()) return false;
-            for (int j = 0; j < containers[i].stack.size(); j++) {
-                if (!containers[i].stack.get(j).equals(o1.containers[i].stack.get(j)))
+            if (thisContainer == null && thatContainer == null) continue;
+            if (thisContainer.size() != thatContainer.size()) return false;
+            for (int j = 0; j < thisContainer.size(); j++) {
+                if (thisContainer.get(j).first() != thatContainer.get(j).first())
                     return false;
             }
         }
         return true;
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")
     @Override
     public Object clone() {
-        StringBuilder sb = new StringBuilder();
+
+        Containers clone = new Containers();
+        clone.lastIndex = lastIndex;
+        clone.cachedHash = -1;
         for (int i = 0; i < lastIndex + 1; i++) {
-            for (int j = 0; j < containers[i].stack.size(); j++) {
-                sb.append(containers[i].stack.get(j).first());
-                sb.append(containers[i].stack.get(j).second());
-            }
-            if (i != stackSize - 1 && !containers[i + 1].stack.isEmpty() && !sb.isEmpty())
-                sb.append(" ");
+            if (containers[i] == null) continue;
+            clone.containers[i] = (Stack<Pair<Character, Integer>>) containers[i].clone();
         }
-        return new Containers(sb.toString());
+        return clone;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < lastIndex + 1; i++) {
-            if (containers[i] != null && !containers[i].stack.isEmpty()) {
-                sb.append("[");
-                for (int j = 0; j < containers[i].stack.size(); j++) {
-                    sb.append(containers[i].stack.get(j).first());
-                    if (j < containers[i].stack.size() - 1)
-                        sb.append(", ");
-                }
-                sb.append("]\r\n");
+            if (containers[i] == null) continue;
+            sb.append("[");
+            for (int j = 0; j < containers[i].size() - 1; j++) {
+                sb.append(containers[i].get(j).first());
+                sb.append(", ");
             }
+            sb.append(containers[i].getLast().first());
+            sb.append("]\r\n");
         }
-
         return sb.toString();
     }
 
@@ -104,18 +114,43 @@ public class Containers implements Ilayout{
     public int hashCode() {
         if (cachedHash != -1)
             return cachedHash;
+        final int stacksPrime = 7;
+        final int containersPrime = 11;
+        int currStacksQuotient = 1;
+        int currContainersQuotient;
+        int hash = 0;
+
+        for (int i = 0; i < lastIndex + 1; i++)
+        {
+            currStacksQuotient *= stacksPrime;
+            currContainersQuotient = 1;
+            Stack<Pair<Character, Integer>> currStack = containers[i];
+
+            if (currStack == null) continue;
+            for (Pair<Character, Integer> characterIntegerPair : currStack) {
+                hash += (i + 1) * currStacksQuotient  * characterIntegerPair.first() * currContainersQuotient;
+                currContainersQuotient *= containersPrime;
+            }
+        }
+        cachedHash = hash;
+        return hash;
+        /*
+        if (cachedHash != -1)
+            return cachedHash;
         double result = 0;
         int prime1 = 3;
         int prime2 = 7;
 
         for (int i = 0; i < lastIndex + 1; i++) {
-            for (int j = 0; j < containers[i].stack.size() - 1; j++) {
-                result += (Character.getNumericValue(containers[i].stack.get(j).first()) * containers[i].stack.get(j).second())
+            if (containers[i] == null) continue;
+            for (int j = 0; j < containers[i].size(); j++) {
+                result += (Character.getNumericValue(containers[i].get(j).first()) * containers[i].get(j).second())
                 * Math.pow(prime1, j) * Math.pow(prime2, i);
             }
+
         }
         cachedHash = (int) result;
-        return cachedHash;
+        return cachedHash; */
     }
 
     private void setCost(int cost){
@@ -128,23 +163,24 @@ public class Containers implements Ilayout{
         Containers buffer;
         Pair<Character, Integer> pairBuffer;
         for (int i = 0; i < lastIndex + 1; i++) {
-            buffer = (Containers) this.clone();
-            if (containers[i] != null && !containers[i].stack.isEmpty()) {
-                pairBuffer = buffer.containers[i].stack.pop();
-                if (containers[i].stack.size() > 1) {
-                    buffer.containers[pairBuffer.first() - 65].stack.add(pairBuffer);
-                    buffer.setCost(pairBuffer.second());
-                    children.add(buffer);
-                }
-                for (int j = 0; j < lastIndex + 1; j++) {
-                    buffer = (Containers) this.clone();
-                    pairBuffer = buffer.containers[i].stack.pop();
-                    if (!containers[j].stack.isEmpty() && j != i) {
-                        buffer.containers[j].stack.add(pairBuffer);
-                        buffer.setCost(pairBuffer.second());
-                        children.add(buffer);
-                    }
-                }
+            if (containers[i] == null) continue;
+            if (containers[i].size() > 1) {
+                buffer = (Containers) this.clone();
+                pairBuffer = buffer.containers[i].pop();
+                buffer.containers[calcIndex(pairBuffer.first())] = new Stack<>();
+                buffer.containers[calcIndex(pairBuffer.first())].add(pairBuffer);
+                buffer.setCost(pairBuffer.second());
+                children.add(buffer);
+            }
+            for (int j = 0; j < lastIndex + 1; j++) {
+                if (j == i) continue;
+                if (containers[j] == null) continue;
+                buffer = (Containers) this.clone();
+                pairBuffer = buffer.containers[i].pop();
+                if(buffer.containers[i].isEmpty()) buffer.containers[i] = null;
+                buffer.containers[j].add(pairBuffer);
+                buffer.setCost(pairBuffer.second());
+                children.add(buffer);
             }
         }
         return children;

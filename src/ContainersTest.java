@@ -67,6 +67,13 @@ class ContainersTest {
     }
 
     @Test
+    public void testToString1() {
+        Containers c1 = new Containers("A1B2 C3");
+        String s = "[A, B]\r\n[C]\r\n";
+        assertEquals(s, c1.toString());
+    }
+
+    @Test
     public void testClone() {
         Containers c1 = new Containers("A1 B2 C3");
         Containers c2 = new Containers("A1B2 C3");
@@ -113,6 +120,12 @@ class ContainersTest {
         Containers c2 = new Containers("K1 L1 N1J1 O1I1M1");
         assertNotEquals(c1, c2);
     }
+    @Test
+    public void testEquals7() {
+        Containers c1 = new Containers("A1 B2 C3");
+        Containers c2 = new Containers("A1B2 C3");
+        assertNotEquals(c1, c2);
+    }
 
 
 
@@ -122,12 +135,11 @@ class ContainersTest {
         Containers c2 = new Containers("A1 B2 C3");
         Containers c3 = new Containers("A1 C3B2");
         Containers c4 = new Containers("A1B2C3");
-        Containers c38 = new Containers("A5B6 C1 D1 E1G1 F1 H1");
         ArrayList<Containers> children = new ArrayList<>();
         children.add(c2);
         children.add(c3);
         children.add(c4);
-        assertEquals(c1.children(), children);
+        assertEquals(children, c1.children());
     }
 
     @Test
@@ -226,18 +238,46 @@ class ContainersTest {
     }
 
     @Test
-    public void testCon() {
-        Containers c1 = new Containers("B2A1 C3");
-        c1.children().add(c1);
-    }
-
-    @Test
-    public void testSolve() throws Exception {
+    public void testSolve1() throws Exception {
         Containers c1 = new Containers("A1 B2 C3");
         Containers c2 = new Containers("A1B2 C3");
         Containers c3 = new Containers("A1B2C3");
         Containers c4 = new Containers("ABC");
         Containers[] a = {c1, c2, c3, c4};
+        BestFirst s = new BestFirst();
+        Iterator<BestFirst.State> it = s.solve(c1, c4);
+        int j = 0;
+        while(it.hasNext()) {
+            BestFirst.State i = it.next();
+            assertEquals(a[j++].toString(), i.toString());
+        }
+    }
+    @Test
+    public void testSolve2() throws Exception {
+        Containers c1 = new Containers("A9B9C9D9E9F9G9H9I9J9K9L3 M9N9O9P9Q9R9S9T9U9V9W9X9Y9Z1");
+        Containers c2 = new Containers("A9B9C9D9E9F9G9H9I9J9K9L3 M9N9O9P9Q9R9S9T9U9V9W9X9Y9 Z1");
+        Containers c3 = new Containers("A9B9C9D9E9F9G9H9I9J9K9 M9N9O9P9Q9R9S9T9U9V9W9X9Y9L3 Z1");
+        Containers c4 = new Containers("A9B9C9D9E9F9G9H9I9J9K9Z1 M9N9O9P9Q9R9S9T9U9V9W9X9Y9L3");
+        Containers[] a = {c1, c2, c3, c4};
+        BestFirst s = new BestFirst();
+        Iterator<BestFirst.State> it = s.solve(c1, c4);
+        int j = 0;
+        while(it.hasNext()) {
+            BestFirst.State i = it.next();
+            assertEquals(i.toString(), a[j++].toString());
+        }
+    }
+    @Test
+    public void testSolve3() throws Exception {
+        Containers c1 = new Containers("A1E5I5 B4C5D5F5");
+        Containers c2 = new Containers("A1E5 I5 B4C5D5F5");
+        Containers c3 = new Containers("A1E5 I5 B4C5D5 F5");
+        Containers c4 = new Containers("A1E5 I5D5 B4C5 F5");
+        Containers c5 = new Containers("A1 I5D5E5 B4C5 F5");
+        Containers c6 = new Containers("A1 I5D5E5F5 B4C5");
+        Containers c7 = new Containers("A1 I5D5E5F5C5 B4");
+        Containers c8 = new Containers("A1B4 I5D5E5F5C5");
+        Containers[] a = {c1, c2, c3, c4, c5, c6, c7, c8};
         BestFirst s = new BestFirst();
         Iterator<BestFirst.State> it = s.solve(c1, c4);
         int j = 0;

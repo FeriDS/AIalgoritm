@@ -5,7 +5,7 @@ class BestFirst {
     private Map<Ilayout, State> fechados;
     private State actual;
     private Ilayout objective;
-    private HashSet<State> abertosHash;
+    private HashMap<Ilayout, State> abertosHash;
     static class State {
         private Ilayout layout;
         private State father;
@@ -20,7 +20,7 @@ class BestFirst {
         public String toString() { return layout.toString(); }
         public double getG() {return g;}
         public int hashCode() {
-            return toString().hashCode();
+            return layout.hashCode();
         }
         public boolean equals (Object o) {
             if (o==null) return false;
@@ -29,6 +29,7 @@ class BestFirst {
             return this.layout.equals(n.layout);
         }
     }
+
 
     /**
      * Função que retorna uma lista com os ascendentes do "atual"
@@ -66,29 +67,26 @@ class BestFirst {
      * @throws CloneNotSupportedException
      */
     final public Iterator<State> solve(Ilayout s, Ilayout goal) throws CloneNotSupportedException {
-         objective = goal;
+        objective = goal;
         abertos = new PriorityQueue<>(10,
                 (s1, s2) -> (int) Math.signum(s1.getG()-s2.getG()));
         fechados = new HashMap<> ();
-        abertos.add(new State(s, null));
-        abertosHash = new HashSet<> ();
-        abertosHash.add(new State(s, null));
-        List<Ilayout> buffer;
+        State state = new State(s, null);
+        abertos.add(state);
+        abertosHash = new HashMap<> ();
+        abertosHash.put(s, abertos.peek());
         State atual = null;
         List<State> sucs = new ArrayList<>();
-        int j;
         while (!abertos.isEmpty()) {
             abertosHash.remove(atual);
             atual = abertos.poll();
             if (atual.layout.isGoal(objective))
                 break;
-            if (atual != null) {
-                fechados.put(atual.layout, atual.father);
-                sucs = sucessores(atual);
-            }
+            fechados.put(atual.layout, atual.father);
+            sucs = sucessores(atual);
             for (State suc: sucs) {
-                if (!fechados.containsKey(suc) && !abertosHash.contains(suc)) {
-                    abertosHash.add(suc);
+                if (!fechados.containsKey(suc.layout) && !abertosHash.containsKey(suc.layout)) {
+                    abertosHash.put(suc.layout, suc);
                     abertos.add(suc);
                 }
             }
