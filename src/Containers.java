@@ -96,7 +96,7 @@ public class Containers implements Ilayout{
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < lastIndex + 1; i++) {
+        for (int i = 0; i < this.containers.length; i++) {
             if (containers[i] == null) continue;
             sb.append("[");
             for (int j = 0; j < containers[i].size() - 1; j++) {
