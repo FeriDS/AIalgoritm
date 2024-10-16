@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Stack;
 
 public interface Ilayout {
     /**
@@ -14,5 +15,7 @@ public interface Ilayout {
      @return the cost for moving from the input config to the receiver.
      */
     double getK();
+
+    Stack<Pair<Character, Integer>>[] getLayout();
 
 }

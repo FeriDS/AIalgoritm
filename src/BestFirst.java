@@ -10,6 +10,8 @@ class BestFirst {
         private Ilayout layout;
         private State father;
         private double g;
+        private double h = -1;
+        private int f = -1;
         public State(Ilayout l, State n) {
             layout = l;
             father = n;
@@ -19,6 +21,35 @@ class BestFirst {
         }
         public String toString() { return layout.toString(); }
         public double getG() {return g;}
+        public double getH(Ilayout obj) {
+            double result = 0;
+            if (h != -1)
+                return h;
+            for (int i = 0; i < this.layout.getLayout().length; i++) {
+                if (this.layout.getLayout()[i] == null) continue;
+                if (obj.getLayout()[i] == null) {
+                    result += this.layout.getLayout()[i].size();
+                    continue;
+                }
+                if (this.layout.getLayout()[i].size() > obj.getLayout()[i].size()) {
+                    result += this.layout.getLayout()[i].size() - obj.getLayout()[i].size();
+                }
+                for (int j = 0; j < this.layout.getLayout()[i].size(); j++) {
+                    if (obj.getLayout()[i].size() < j + 1) break;
+                    if (!this.layout.getLayout()[i].get(j).first().equals(obj.getLayout()[i].get(j).first())) {
+                        result++;
+                    }
+                }
+            }
+            h = result;
+            return result;
+        }
+        public int getF(Ilayout obj) {
+            if (f != -1)
+                return f;
+            f = (int) (g + getH(obj));
+            return f;
+        }
         public int hashCode() {
             return layout.hashCode();
         }
@@ -69,7 +100,7 @@ class BestFirst {
     final public Iterator<State> solve(Ilayout s, Ilayout goal) throws CloneNotSupportedException {
         objective = goal;
         abertos = new PriorityQueue<>(10,
-                (s1, s2) -> (int) Math.signum(s1.getG()-s2.getG()));
+                (s1, s2) -> (int) Math.signum(s1.getF(goal) - s2.getF(goal)));
         fechados = new HashMap<> ();
         State state = new State(s, null);
         abertos.add(state);

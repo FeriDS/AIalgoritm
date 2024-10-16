@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
+
 @SuppressWarnings("all")
 class Board implements Ilayout, Cloneable {
     private static final int dim = 3;
@@ -34,6 +36,11 @@ class Board implements Ilayout, Cloneable {
             result.append("\r\n");
         }
         return result.toString();
+    }
+
+    @Override
+    public Stack<Pair<Character, Integer>>[] getLayout() {
+        return null;
     }
 
     public boolean equals(Object o) {

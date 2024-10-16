@@ -8,7 +8,7 @@ public class Containers implements Ilayout{
     private final Stack<Pair<Character, Integer>>[] containers;
     private int cachedHash = -1;
     private int cost = 0;
-    private int lastIndex = 0;
+    protected int lastIndex = 0;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Containers() {
@@ -19,8 +19,8 @@ public class Containers implements Ilayout{
         containers = (Stack<Pair<Character, Integer>>[]) new Stack[stackSize];
         int buffer = calcIndex(str.charAt(0));
         int indexbuff = 0;
+        containers[buffer] = new Stack<>();
         if (Character.isDigit(str.charAt(1))) {
-            containers[buffer] = new Stack<>();
             containers[buffer].push(new Pair<>(str.charAt(0), Character.getNumericValue(str.charAt(1))));
             for (int i = 2; i < str.length(); i++) {
                 if(str.charAt(i)==' '){
@@ -41,7 +41,6 @@ public class Containers implements Ilayout{
             }
         }
         else {
-            containers[buffer] = new Stack<>();
             containers[buffer].push(new Pair<>(str.charAt(0), null));
             for (int i = 1; i < str.length(); i++) {
                 if(str.charAt(i)==' '){
@@ -110,6 +109,10 @@ public class Containers implements Ilayout{
         return sb.toString();
     }
 
+    @Override
+    public Stack<Pair<Character, Integer>>[] getLayout() {
+        return containers;
+    }
 
     public int hashCode() {
         if (cachedHash != -1)
@@ -167,6 +170,8 @@ public class Containers implements Ilayout{
             if (containers[i].size() > 1) {
                 buffer = (Containers) this.clone();
                 pairBuffer = buffer.containers[i].pop();
+                if (calcIndex(pairBuffer.first()) == -16)
+                    System.out.println("a");
                 buffer.containers[calcIndex(pairBuffer.first())] = new Stack<>();
                 buffer.containers[calcIndex(pairBuffer.first())].add(pairBuffer);
                 buffer.setCost(pairBuffer.second());
