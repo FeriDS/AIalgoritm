@@ -128,6 +128,55 @@ class ContainersTest {
     }
 
 
+    @Test
+    public void testEquals8()
+    {
+        Containers a = new Containers("A B C");
+        Containers b = new Containers("C B A");
+        Containers c = new Containers("B C A");
+        Containers d = new Containers("C A B");
+
+        assertTrue(a.equals(b));
+        assertTrue(a.equals(c));
+        assertTrue(a.equals(d));
+        assertTrue(b.equals(c));
+        assertTrue(b.equals(d));
+        assertTrue(c.equals(d));
+    }
+
+    @Test
+    public void testEquals9()
+    {
+        Containers a = new Containers("A1B1C1");
+        Containers b = new Containers("ABC");
+        Containers c = new Containers("A1 B1 C1");
+        Containers d = new Containers("C1B1A1");
+
+        assertTrue(a.equals(b));
+        assertFalse(a.equals(c));
+        assertFalse(a.equals(d));
+        assertFalse(b.equals(c));
+        assertFalse(b.equals(d));
+        assertFalse(c.equals(d));
+    }
+
+    @Test
+    public void testEquals10()
+    {
+        Containers a = new Containers("A1 B1 C1 D1 E1 F1G1H1I1");
+        Containers b = new Containers("A1 C1 D1 B1 E1 F1G1H1I1");
+        Containers c = new Containers("A B C D E FGHI");
+        Containers d = new Containers("FGHI E D C B A");
+
+        assertTrue(a.equals(b));
+        assertTrue(a.equals(c));
+        assertTrue(a.equals(d));
+        assertTrue(b.equals(c));
+        assertTrue(b.equals(d));
+        assertTrue(c.equals(d));
+    }
+
+
 
     @Test
     public void testChildren1() {
@@ -238,6 +287,53 @@ class ContainersTest {
     }
 
     @Test
+    public void testChildren3() throws CloneNotSupportedException {
+        Containers a = new Containers("A1B1C1");
+        Containers b = new Containers("A1B1 C1");
+
+        ArrayList<Ilayout> children = new ArrayList<>();
+        children.add(b);
+
+        assertEquals(children, a.children());
+    }
+
+    @Test
+    public void testChildren4() throws CloneNotSupportedException {
+        Containers a = new Containers("A1B1 C1");
+        Containers b = new Containers("A1 B1 C1");
+        Containers c = new Containers("A1B1C1");
+        Containers d = new Containers("A1 C1B1");
+
+        ArrayList<Ilayout> children = new ArrayList<>();
+        children.add(b);
+        children.add(d);
+        children.add(c);
+
+        assertEquals(children, a.children());
+    }
+
+    @Test
+    public void testChildren5() throws CloneNotSupportedException {
+        Containers a = new Containers("A1 B1 C1");
+        Containers b = new Containers("A1B1 C1");
+        Containers c = new Containers("A1 B1C1");
+        Containers d = new Containers("A1C1 B1");
+        Containers e = new Containers("C1A1 B1");
+        Containers f = new Containers("C1 B1A1");
+        Containers g = new Containers("C1B1 A1");
+
+        ArrayList<Ilayout> children = new ArrayList<>();
+        children.add(f);
+        children.add(e);
+        children.add(b);
+        children.add(g);
+        children.add(d);
+        children.add(c);
+
+        assertEquals(children, a.children());
+    }
+    
+    @Test
     public void testSolve1() throws Exception {
         Containers c1 = new Containers("A1 B2 C3");
         Containers c2 = new Containers("A1B2 C3");
@@ -284,6 +380,121 @@ class ContainersTest {
         while(it.hasNext()) {
             BestFirst.State i = it.next();
             assertEquals(i.toString(), a[j++].toString());
+        }
+    }
+
+    @Test
+    public void testSolve4() throws CloneNotSupportedException {
+
+        Containers a = new Containers("A1B1C1");
+        Containers a2 = new Containers("AB C");
+        Containers a3 = new Containers("A B C");
+        BestFirst b = new BestFirst();
+
+        Containers [] c = {a, a2, a3};
+
+        Iterator<BestFirst.State> it = b.solve(a, a3);
+        int j = 0;
+        while(it.hasNext()){
+            BestFirst.State i = it.next();
+            assertEquals(i.toString(), c[j++].toString());
+        }
+    }
+
+    @Test
+    public void testSolve5() throws CloneNotSupportedException {
+
+        Containers a = new Containers("A1B2 C1D1");
+        Containers a2 = new Containers("AB C D");
+        Containers a3 = new Containers("AB DC");
+        Containers a4 = new Containers("A B DC");
+        Containers a5 = new Containers("BA DC");
+        BestFirst b = new BestFirst();
+
+        Containers [] c = {a, a2, a3, a4, a5};
+
+        Iterator<BestFirst.State> it = b.solve(a, a5);
+        int j = 0;
+        while(it.hasNext()){
+            BestFirst.State i = it.next();
+            assertEquals(i.toString(), c[j++].toString());
+        }
+    }
+
+    @Test
+    public void testSolve6() throws CloneNotSupportedException {
+        Containers a = new Containers("A1 B1C3");
+        Containers a2 = new Containers("A B C");
+        Containers a3 = new Containers("AB C");
+        Containers a4 = new Containers("ABC");
+        BestFirst b = new BestFirst();
+
+        Containers [] c = {a, a2, a3, a4};
+
+        Iterator<BestFirst.State> it = b.solve(a, a4);
+        int j = 0;
+        while(it.hasNext()){
+            BestFirst.State i = it.next();
+            assertEquals(i.toString(), c[j++].toString());
+        }
+    }
+
+    @Test
+    public void testSolve7() throws CloneNotSupportedException {
+        Containers a = new Containers("I1J1K2 L1M1N1O1");
+        Containers a2 = new Containers("IJK LMN O");
+        Containers a3 = new Containers("IJK LM N O");
+        Containers a4 = new Containers("IJK L N OM");
+        Containers a5 = new Containers("IJ K L N OM");
+        Containers a6 = new Containers("I K L NJ OM");
+        Containers a7 = new Containers("K L NJ OMI");
+        BestFirst b = new BestFirst();
+
+        Containers [] c = {a, a2, a3, a4, a5, a6, a7};
+
+        Iterator<BestFirst.State> it = b.solve(a, a7);
+        int j = 0;
+        while(it.hasNext()){
+            BestFirst.State i = it.next();
+            assertEquals(i.toString(), c[j++].toString());
+        }
+    }
+
+    @Test
+    public void testSolve8() throws CloneNotSupportedException {
+        Containers a = new Containers("I1J1K1 L1M1N2O1");
+        Containers a2 = new Containers("IJ K LMNO");
+        Containers a3 = new Containers("IJ K LMN O");
+        Containers a4 = new Containers("IJ K LM N O");
+        Containers a5 = new Containers("I K LM NJ O");
+        Containers a6 = new Containers("I K L NJ OM");
+        Containers a7 = new Containers("K L NJ OMI");
+        BestFirst b = new BestFirst();
+
+        Containers [] c = {a, a2, a3, a4, a5, a6, a7};
+
+        Iterator<BestFirst.State> it = b.solve(a, a7);
+        int j = 0;
+        while(it.hasNext()){
+            BestFirst.State i = it.next();
+            assertEquals(i.toString(), c[j++].toString());
+        }
+    }
+
+    @Test
+    public void testSolve9() throws CloneNotSupportedException {
+        Containers a = new Containers("A5B6 C1 D1 E1 F1 G1 H1");
+        Containers a2 = new Containers("A B C D E F G H");
+        Containers a3 = new Containers("BA C D E F G H");
+        BestFirst b = new BestFirst();
+
+        Containers [] c = {a, a2, a3};
+
+        Iterator<BestFirst.State> it = b.solve(a, a3);
+        int j = 0;
+        while(it.hasNext()){
+            BestFirst.State i = it.next();
+            assertEquals(i.toString(), c[j++].toString());
         }
     }
 }

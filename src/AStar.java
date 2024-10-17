@@ -3,7 +3,7 @@ import java.util.*;
 class AStar {
     protected Queue<State> abertos;
     private Map<Ilayout, State> fechados;
-    private State actual;
+    private State atual;
     private Ilayout objective;
     private HashMap<Ilayout, State> abertosHash;
     static class State {
@@ -21,7 +21,12 @@ class AStar {
         }
         public String toString() { return layout.toString(); }
         public double getG() {return g;}
-        public double getH(Ilayout obj) {
+
+        public double getH0(Ilayout obj){
+            return 0;
+        }
+
+        public double getH1(Ilayout obj) {
             double result = 0;
             if (h != -1)
                 return h;
@@ -44,10 +49,44 @@ class AStar {
             h = result;
             return result;
         }
+
+        private double getH2(Ilayout obj){
+            double result = 0;
+            if(h != -1)
+                return h;
+
+            for(int i = 0; i < this.layout.getLayout().length; i++){
+                if (this.layout.getLayout()[i] == null) continue;
+
+                if (obj.getLayout()[i] == null) {
+                    for(int j = 0; j < this.layout.getLayout()[i].size(); j++)
+                        result += this.layout.getLayout()[i].get(j).second();
+
+                    continue;
+                }
+
+                if (this.layout.getLayout()[i].size() > obj.getLayout()[i].size()) {
+                    for(int j = obj.getLayout()[i].size(); j < this.layout.getLayout()[i].size(); j++){
+                        result += this.layout.getLayout()[i].get(j).second();
+                    }
+                }
+
+                for (int j = 0; j < this.layout.getLayout()[i].size(); j++) {
+                    if (obj.getLayout()[i].size() < j + 1) break;
+                    if (!this.layout.getLayout()[i].get(j).first().equals(obj.getLayout()[i].get(j).first())) {
+                        result += this.layout.getLayout()[i].get(j).second();
+                    }
+                }
+            }
+
+            h= result;
+
+            return result;
+        }
         public int getF(Ilayout obj) {
             if (f != -1)
                 return f;
-            f = (int) (g + getH(obj));
+            f = (int) (g + getH2(obj));
             return f;
         }
         public int hashCode() {
@@ -61,6 +100,17 @@ class AStar {
         }
     }
 
+    public int getAbertosSize(){
+        return abertos.size();
+    }
+
+    public int getFechadosSize(){
+        return fechados.size();
+    }
+
+    public int solutionLength(){
+        return ascendants(atual).size();
+    }
 
     /**
      * Função que retorna uma lista com os ascendentes do "atual"
@@ -101,24 +151,42 @@ class AStar {
         objective = goal;
         abertos = new PriorityQueue<>(10,
                 (s1, s2) -> (int) Math.signum(s1.getF(goal) - s2.getF(goal)));
+
         fechados = new HashMap<> ();
         State state = new State(s, null);
         abertos.add(state);
         abertosHash = new HashMap<> ();
         abertosHash.put(s, abertos.peek());
-        State atual = null;
+        atual = null;
         List<State> sucs = new ArrayList<>();
+
         while (!abertos.isEmpty()) {
-            abertosHash.remove(atual);
             atual = abertos.poll();
+            abertosHash.remove(atual.layout);
+
             if (atual.layout.isGoal(objective))
                 break;
+
             fechados.put(atual.layout, atual.father);
             sucs = sucessores(atual);
+
             for (State suc: sucs) {
-                if (!fechados.containsKey(suc.layout) && !abertosHash.containsKey(suc.layout)) {
-                    abertosHash.put(suc.layout, suc);
+                if(fechados.containsKey(suc.layout)
+                        && suc.getF(goal) < fechados.get(suc.layout).getF(goal)) {
+                    fechados.get(suc.layout).father = suc.father;
+                    fechados.get(suc.layout).g = suc.getG();
+                    fechados.get(suc.layout).f = suc.getF(goal);
+                }
+
+                if(abertosHash.containsKey(suc.layout)
+                        && suc.getF(goal) < abertosHash.get(suc.layout).getF(goal)){
+                    abertos.remove(suc);
                     abertos.add(suc);
+                }
+
+                if (!fechados.containsKey(suc.layout) && !abertosHash.containsKey(suc.layout)) {
+                    abertos.add(suc);
+                    abertosHash.put(suc.layout, suc);
                 }
             }
         }
