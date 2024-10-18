@@ -19,7 +19,7 @@ public class Main {
 
         System.out.println(goal);
         System.out.println((int) result);
-        //stats.printStats();
+        stats.printStats();
 
         sc.close();
     }
