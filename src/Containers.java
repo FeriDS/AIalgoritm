@@ -8,7 +8,7 @@ public class Containers implements Ilayout{
     private final Stack<Pair<Character, Integer>>[] containers;
     private int cachedHash = -1;
     private int cost = 0;
-    protected int lastIndex = 0;
+    private int lastIndex = 0;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Containers() {

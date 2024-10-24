@@ -24,7 +24,7 @@ public class ContainersStats {
     }
 
     private double calcPenetrance() {
-        return (double) this.solutionLength /this.expandedNodes;
+        return (double) this.solutionLength / (this.generatedNodes);
     }
 
     public void getStartTime(){
