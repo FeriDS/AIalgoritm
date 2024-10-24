@@ -1,4 +1,11 @@
 import java.util.*;
+
+/**
+ * Esta classe foi criada para o ambito de calcular o caminho de menor custo usando um algoritmo
+ * chamado A* / Astar / Aestrela.
+ * Ela contem uma lista com os nós abertos, ou seja, os que ainda faltam explorar, e contêm
+ * uma lista com os fechados, que são os que ja foram explorados.
+ */
 @SuppressWarnings("all")
 class AStar {
     protected Queue<State> abertos;
@@ -6,6 +13,11 @@ class AStar {
     private State atual;
     private Ilayout objective;
     private HashMap<Ilayout, State> abertosHash;
+
+    /**
+     *Esta classe está implementada para guardar cada configuração e fazer os seus cálculos até chegar
+     *ao estado final/desejado.
+     */
     static class State {
         private Ilayout layout;
         private State father;
@@ -26,6 +38,13 @@ class AStar {
             return 0;
         }
 
+        /**
+         * Método que vai cálcular a primeira versão da heurística a ser aplicada no algoritmo A*.
+         * Sempre que acha um container num local errado irá adicionar +1 ao valor da heuristica, sem se preocupar com
+         * o custo de cada container.
+         * @param obj layout do estado final/desejado
+         * @return valor cálculado da heurística para a configurção/estado atual
+         */
         public double getH1(Ilayout obj) {
             double result = 0;
             if (h != -1)
@@ -50,6 +69,13 @@ class AStar {
             return result;
         }
 
+        /**
+         * Método que vai álcular a segunda versão da heurística a ser usada pelo algoritmo A*.
+         * Sempre que acha um container posicionado incorretamente ele vai adicionar o seu custo de movimento
+         * ao valor da heuristica.
+         * @param obj layout do estado final/desejado
+         * @return valor final do cáculo da heurística
+         */
         private double getH2(Ilayout obj){
             double result = 0;
             if(h != -1)
@@ -84,6 +110,82 @@ class AStar {
             return result;
         }
 
+
+        /**
+         * Método que vai álcular a segunda versão mas com algumas melhorias da heurística a ser usada pelo algoritmo A*.
+         * Caso encontre um container mal posicionado ele vai ver se o mesmo se vai encontrar na mesma stack, caso sim
+         * ele ira adicionar ao valor da heurística 2x o seu custo de movimentação, caso não ele vai adicionar apenas 1x,
+         * depois caso se situe na mesma stack ele vai fazer a mesma verificação para os que se encontram acima dele
+         * pois será necessário tirar pelo menos 1x todos os que se situam acima.
+         * @param obj layout do estado final/desejado
+         * @return valor final do cálculo da heurística
+         */
+        private double getH2_5(Ilayout obj){
+            double result = 0;
+            if(h != -1)
+                return h;
+
+            Stack<Pair<Character, Integer>> currentStack, goalStack;
+            HashSet<Character> objHash;
+            boolean foundOne = false;
+
+            for(int i = 0; i < this.layout.getLayout().length; i++){
+                currentStack = this.layout.getLayout()[i];
+
+                if(currentStack == null)
+                    continue;
+
+                goalStack = obj.getLayout()[i];
+
+                if (goalStack == null) {
+                    for(int j = 0; j < currentStack.size(); j++)
+                        result += currentStack.get(j).second();
+
+                    continue;
+                }
+
+                objHash = new HashSet<>();
+                foundOne = false;
+
+                for(int j = 0; j < goalStack.size(); j++)
+                    objHash.add(goalStack.get(j).first());
+
+                if (currentStack.size() > goalStack.size())
+                    for(int j = goalStack.size(); j < currentStack.size(); j++) {
+                        if(objHash.contains(currentStack.get(j).first()))
+                            result += 2 * currentStack.get(j).second();
+                        else
+                            result += currentStack.get(j).second();
+                    }
+
+                for(int j = 1; j < Math.min(currentStack.size(), goalStack.size()); j++) {
+                    if (foundOne) {
+                        if (objHash.contains(currentStack.get(j).first()))
+                            result += 2 * currentStack.get(j).second();
+                        else
+                            result += currentStack.get(j).second();
+                    }
+                    else if (!currentStack.get(j).first().equals(goalStack.get(j).first())) {
+                        if (objHash.contains(currentStack.get(j).first()))
+                            result += 2 * currentStack.get(j).second();
+                        else
+                            result += currentStack.get(j).second();
+                    }
+                }
+
+            }
+
+            h = result;
+            return result;
+        }
+
+        /**
+         * Método que vai álcular a terceira versão da heurística a ser usada pelo algoritmo A*.
+         * Caso encontre um container mal posicionado ele vai ver se o mesmo se vai encontrar na mesma stack, caso sim
+         * ele ira adicionar ao valor da heurística 2x o seu custo de movimentação, caso não ele vai adicionar apenas 1.
+         * @param obj layout do estado final/desejado
+         * @return valor final do cálculo da heurística
+         */
         private double getH3(Ilayout obj){
             double result = 0;
             if(h != -1)
@@ -133,91 +235,58 @@ class AStar {
 
         private double getH4(Ilayout obj){
             double result = 0;
-            int ind = -1;
-
             if(h != -1)
                 return h;
 
-            int minSize = 0;
+            HashSet<Character> goalHash = new HashSet<>();
 
-            for(int i = 0; i < this.layout.getLayout().length; i++) {
+            Stack<Pair<Character, Integer>> currentStack, goalStack;
 
-                Stack<Pair<Character, Integer>> currentStack = this.layout.getLayout()[i];
-                Stack<Pair<Character, Integer>> goalStack = obj.getLayout()[i];
+            for(int i = 0; i < this.layout.getLayout().length; i++){
+
+                currentStack = this.layout.getLayout()[i];
+                goalStack = obj.getLayout()[i];
 
                 if (currentStack == null)
                     continue;
 
                 if (goalStack == null) {
-                    for(int j = 0; j < currentStack.size(); j++)
-                        result += currentStack.get(j).second();
-
+                    for (int j = 0; j < currentStack.size(); j++) {
+                        result += currentStack.get(j).second() * 2;
+                    }
                     continue;
                 }
 
-                if(currentStack.size() > goalStack.size()){
-                    for (int j = 1; j < goalStack.size(); j++) {
-                        if(currentStack.get(j).first() != goalStack.get(j).first()){
-                            ind = j + 1;
-                            if(inStack(currentStack.get(j).first(), goalStack, j))
-                                result += 2 * currentStack.get(j).second();
-                            else
-                                result += currentStack.get(j).second();
-                            break;
-                        }
-                    }
-
-                    if(ind != -1){
-                        for (int j = ind; j < currentStack.size(); j++) {
-                            if(inStack(currentStack.get(j).first(), goalStack, j))
-                                result += 2 * currentStack.get(j).second();
-                            else
-                                result += currentStack.get(j).second();
-                        }
-                        ind = -1;
-                    }
+                goalHash = new HashSet<>();
+                for (int j = 0; j < goalStack.size(); j++) {
+                    goalHash.add(goalStack.get(j).first());
                 }
-                else
-                {
-                    for(int j = 1; j < currentStack.size(); j++){
-                        if(currentStack.get(j).first() != goalStack.get(j).first()){
-                            ind = j + 1;
-                            if(inStack(currentStack.get(j).first(), goalStack, j))
-                                result += 2 * currentStack.get(j).second();
-                            else
-                                result += currentStack.get(j).second();
-                        }
-                    }
 
-                    if(ind != -1){
-                        for(int j = ind; j < currentStack.size(); j++){
-                            if(inStack(currentStack.get(j).first(), goalStack, j))
-                                result += 2 * currentStack.get(j).second();
-                            else
-                                result += currentStack.get(j).second();
+                for (int j = 0; j < currentStack.size(); j++) {
+                    if (j >= goalStack.size() || !currentStack.get(j).first().equals(goalStack.get(j).first())) {
+                        if (goalHash.contains(currentStack.get(j).first())) {
+                            result += 2 * currentStack.get(j).second();
+                        } else {
+                            result += currentStack.get(j).second();
                         }
-                        ind = -1;
                     }
                 }
 
+                if (currentStack.size() > goalStack.size()) {
+                    for (int j = goalStack.size(); j < currentStack.size(); j++) {
+                        result += 2 * currentStack.get(j).second();
+                    }
+                }
             }
 
             h = result;
             return result;
         }
 
-        private boolean inStack(Character l, Stack<Pair<Character, Integer>> g, int j){
-            for (int i = j; i < g.size(); i++) {
-                if(g.get(i).first() == l)
-                    return true;
-            }
-            return false;
-        }
-
         public int getF(Ilayout obj) {
             if (f != -1)
                 return f;
-            f = (int) (g + getH3(obj));
+            f = (int) (g + getH2_5(obj));
             return f;
         }
         public int hashCode() {
@@ -293,6 +362,10 @@ class AStar {
 
         while (!abertos.isEmpty()) {
             atual = abertos.poll();
+            if(abertosHash.containsKey(atual.layout)
+                    && atual.getF(goal) > abertosHash.get(atual.layout).getF(goal))
+                atual = abertosHash.get(atual.layout);
+
             abertosHash.remove(atual.layout);
 
             if (atual.layout.isGoal(objective))
@@ -304,15 +377,21 @@ class AStar {
             for (State suc: sucs) {
                 if(fechados.containsKey(suc.layout)
                         && suc.getF(goal) < fechados.get(suc.layout).getF(goal)) {
-                    fechados.get(suc.layout).father = suc.father;
-                    fechados.get(suc.layout).g = suc.getG();
-                    fechados.get(suc.layout).f = suc.getF(goal);
+                    // fechados.get(suc.layout).father = suc.father;
+                    //fechados.get(suc.layout).g = suc.getG();
+                    //fechados.get(suc.layout).f = suc.getF(goal);
+                    //fechados.remove(suc.layout);
+                    abertos.add(suc);
+                    abertosHash.put(suc.layout, suc);
                 }
 
                 if(abertosHash.containsKey(suc.layout)
                         && suc.getF(goal) < abertosHash.get(suc.layout).getF(goal)){
-                    abertos.remove(suc);
-                    abertos.add(suc);
+                    //abertos.remove(suc);
+                    //abertos.add(suc);
+                    // abertosHash.get(suc.layout).g = suc.getG();
+                    // abertosHash.get(suc.layout).f = suc.getF(goal);
+                    // abertosHash.get(suc.layout).father = suc.father;
                 }
 
                 if (!fechados.containsKey(suc.layout) && !abertosHash.containsKey(suc.layout)) {

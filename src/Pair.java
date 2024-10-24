@@ -34,8 +34,6 @@ public class Pair<A, B> {
             return true;
         } else if (obj == null) {
             return false;
-        } else if (this.getClass() != obj.getClass()) {
-            return false;
         } else {
             if (this.first == null) {
                 if (((Pair<?, ?>) obj).first != null) {
