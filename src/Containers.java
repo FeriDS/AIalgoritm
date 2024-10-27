@@ -2,7 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-
+/**
+ * Classe que vai guardar o layout dos containers num Array de Stacks de Pairs.
+ */
 public class Containers implements Ilayout{
     private static final int stackSize = 52;
     private final Stack<Pair<Character, Integer>>[] containers;
@@ -14,6 +16,11 @@ public class Containers implements Ilayout{
     public Containers() {
         containers = (Stack<Pair<Character, Integer>>[]) new Stack[stackSize];
     }
+
+    /**
+     * Construtor da classe Containers que vai receber uma string e transformar-la num layout de containers, aceita
+     * containers com e sem cost.
+     */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Containers(String str) {
         containers = (Stack<Pair<Character, Integer>>[]) new Stack[stackSize];
@@ -54,9 +61,20 @@ public class Containers implements Ilayout{
         }
     }
 
+    /**
+     * Método que vai cálcular o indice de acordo com um Character para serem colocados logo ordenados.
+     * @param a Character a ser usado para cálcular o indice.
+     * @return valor do indice dada a letra.
+     */
     private int calcIndex(Character a) {
         return a - 65 > 26 ? a - 71 : a - 65;
     }
+
+    /**
+     * Metodo que varifica se 2 objetos/layouts são iguais em relação apenas ao seu Character.
+     * @param o objeto que será uma instancia de Containers.
+     * @return true caso sejam iguais, false caso contrário.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,6 +127,10 @@ public class Containers implements Ilayout{
         return sb.toString();
     }
 
+    /**
+     * Método que retorna o layout
+     * @return
+     */
     @Override
     public Stack<Pair<Character, Integer>>[] getLayout() {
         return containers;
@@ -160,6 +182,10 @@ public class Containers implements Ilayout{
         this.cost = cost;
     }
 
+    /**
+     * Metodo que vai criar todos os filhos de um certo layout.
+     * @return uma lista com todos os filhos desse layout.
+     */
     @Override
     public List<Ilayout> children() {
         List<Ilayout> children = new ArrayList<>();
@@ -191,11 +217,20 @@ public class Containers implements Ilayout{
         return children;
     }
 
+    /**
+     * Método que verifica se um estado é o goal ou não.
+     * @param l layout a ser comparado com o this.
+     * @return true caso seja igual ao goal, false caso contrário.
+     */
     @Override
     public boolean isGoal(Ilayout l) {
         return this.equals(l);
     }
 
+    /**
+     * Metodo que retorna o cost.
+     * @return
+     */
     @Override
     public double getK() {
         return cost;

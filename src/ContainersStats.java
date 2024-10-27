@@ -1,3 +1,6 @@
+/**
+ * Classe que vai fazer os cálculos e imprimir os status.
+ */
 public class ContainersStats {
     private int expandedNodes;
     private int generatedNodes;
@@ -23,6 +26,10 @@ public class ContainersStats {
         this.solutionLength = solutionLength;
     }
 
+    /**
+     * Método que cácula a penetrance.
+     * @return
+     */
     private double calcPenetrance() {
         return (double) this.solutionLength / (this.generatedNodes);
     }
@@ -35,6 +42,10 @@ public class ContainersStats {
         endTime = System.nanoTime() * Math.pow(10, -6);
     }
 
+    /**
+     * Método que vai imprimir todos o status de quanto demoru, quantos nós gerou, quantos nós expandiu, penetrance,
+     * e de quantos passos foram necessários para chegar no goal.
+     */
     public void printStats(){
         System.out.println("---------------------Stats---------------------");
         System.out.println("Expanded Nodes: " + this.expandedNodes);

@@ -5,6 +5,11 @@
 //dois objetos da classe Pair.
 //TLDR: para facilitar a comparação do goal com o container pq o goal tem o B como null.
 
+/**
+ * Classe que vai representar pares de valores.
+ * @param <A>
+ * @param <B>
+ */
 public class Pair<A, B> {
     private final A first;
     private final B second;
@@ -14,10 +19,18 @@ public class Pair<A, B> {
         this.second = second;
     }
 
+    /**
+     * Metodo que vai retornar o valor colocado em primeiro.
+     * @return
+     */
     public A first() {
         return this.first;
     }
 
+    /**
+     * Metodo que vai retornar o valor colocado em segundo.
+     * @return
+     */
     public B second() {
         return this.second;
     }
@@ -29,6 +42,11 @@ public class Pair<A, B> {
         return result;
     }
 
+    /**
+     * Metodo que verifica se 2 Pairs são iguais.
+     * @param obj
+     * @return
+     */
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;

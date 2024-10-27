@@ -32,8 +32,18 @@ class AStar {
             else g = 0;
         }
         public String toString() { return layout.toString(); }
+
+        /**
+         * Custo do layout até ao estado atual.
+         * @return custo.
+         */
         public double getG() {return g;}
 
+        /**
+         * Método que vai apenas retornar 0, para verificações de eficiência.
+         * @param obj layout do estado final/desejado.
+         * @return valor 0.
+         */
         public double getH0(Ilayout obj){
             return 0;
         }
@@ -283,10 +293,15 @@ class AStar {
             return result;
         }
 
+        /**
+         * Método que vai cálcular o valor F para ser usado em comparações na PriorityQueue durante o algoritmo A*.
+         * @param obj layout do estado final/desejado
+         * @return valor da função F que usa o custo total até dos passos até ao estado atual e a heuristica do estado atual.
+         */
         public int getF(Ilayout obj) {
             if (f != -1)
                 return f;
-            f = (int) (g + getH2_5(obj));
+            f = (int) (g + getH3(obj));
             return f;
         }
         public int hashCode() {
@@ -300,14 +315,23 @@ class AStar {
         }
     }
 
+    /**
+     * @return o tamanho da lista dos abertos.
+     */
     public int getAbertosSize(){
         return abertos.size();
     }
 
+    /**
+     * @return o tamanho da lista dos fechados.
+     */
     public int getFechadosSize(){
         return fechados.size();
     }
 
+    /**
+     * @return o tamanho da solução
+     */
     public int solutionLength(){
         return ascendants(atual).size();
     }
@@ -328,6 +352,12 @@ class AStar {
         return result;
     }
 
+    /**
+     * Método que cálcula os sucessores de um dado estado, neste caso o estado atual
+     * @param n estado atual
+     * @return lista de todos os sucessores possiveis desse estado
+     * @throws CloneNotSupportedException
+     */
     final private List<State> sucessores(State n) throws CloneNotSupportedException {
         List<State> sucs = new ArrayList<>();
         List<Ilayout> children = n.layout.children();
